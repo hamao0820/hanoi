@@ -57,7 +57,6 @@ func (g *Game) Update() error {
 				case h:
 					g.selected = nil
 				default:
-					fmt.Println("push")
 					if h.CanPush(g.selected.Top()) {
 						h.Push(g.selected.Pop())
 						g.selected = nil
