@@ -63,12 +63,12 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	g.stand.Draw(screen)
 	for _, h := range g.honoi {
-		h.Draw(screen)
+		h.Draw(screen, h == g.selected)
 	}
 
 	if g.selected != nil {
 		x, y := ebiten.CursorPosition()
-		g.selected.Top().Draw(screen, x-g.selected.Top().width/2, y-DiskHeight/2)
+		g.selected.Top().Draw(screen, x-g.selected.Top().width/2, y-DiskHeight/2, 1)
 	}
 
 }
