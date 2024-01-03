@@ -16,13 +16,13 @@ type Hanoi struct {
 func NewHanoi(id int) *Hanoi {
 	return &Hanoi{
 		id:    id,
-		tower: NewTower(),
+		tower: NewTower(id*200+100, ScreenHeight-TowerHeight),
 		disks: []*Disk{},
 	}
 }
 
 func (h *Hanoi) Draw(screen *ebiten.Image) {
-	h.tower.Draw(screen, h.id*200+100, ScreenHeight-TowerHeight)
+	h.tower.Draw(screen)
 	for i, d := range h.disks {
 		d.Draw(screen, h.id*200+100-d.width/2+TowerWidth/2, ScreenHeight-(i+1)*DiskHeight-StandHeight)
 	}

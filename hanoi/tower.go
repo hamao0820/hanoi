@@ -12,20 +12,28 @@ const (
 )
 
 type Tower struct {
-	img *ebiten.Image
+	image *ebiten.Image
+	x, y  int
 }
 
-func NewTower() *Tower {
-	img := ebiten.NewImage(TowerWidth, TowerHeight)
-	img.Fill(color.White)
+func NewTower(x, y int) *Tower {
+	image := ebiten.NewImage(TowerWidth, TowerHeight)
+	image.Fill(color.White)
 
 	return &Tower{
-		img: img,
+		image: image,
+		x:     x,
+		y:     y,
 	}
 }
 
-func (p *Tower) Draw(screen *ebiten.Image, x, y int) {
+func (t *Tower) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(x), float64(y))
-	screen.DrawImage(p.img, op)
+	op.GeoM.Translate(float64(t.x), float64(t.y))
+	screen.DrawImage(t.image, op)
+}
+
+func (t *Tower) IsAround(x, y int) bool {
+	radius := TowerWidth * 5
+	return t.x-radius <= x+TowerWidth/2 && x+TowerWidth/2 <= t.x+radius
 }
