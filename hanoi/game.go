@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
@@ -11,6 +12,7 @@ type Game struct {
 	honoi    [3]*Hanoi
 	stand    *Stand
 	selected *Hanoi
+	count    int
 }
 
 const (
@@ -50,6 +52,7 @@ func (g *Game) Update() error {
 					if h.CanPush(g.selected.Top()) {
 						h.Push(g.selected.Pop())
 						g.selected = nil
+						g.count++
 					}
 				}
 				break
@@ -71,6 +74,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	g.stand.Draw(screen)
+
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("count: %d", g.count))
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
