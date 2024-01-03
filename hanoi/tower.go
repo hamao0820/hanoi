@@ -16,10 +16,9 @@ type Tower struct {
 	x, y  int
 }
 
-func NewTower(x, y int) *Tower {
+func NewTower(x, y int, color color.Color) *Tower {
 	image := ebiten.NewImage(TowerWidth, TowerHeight)
-	image.Fill(color.White)
-
+	image.Fill(color)
 	return &Tower{
 		image: image,
 		x:     x,

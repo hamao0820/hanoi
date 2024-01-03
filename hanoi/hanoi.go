@@ -1,6 +1,8 @@
 package hanoi
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -16,9 +18,13 @@ type Hanoi struct {
 }
 
 func NewHanoi(id int) *Hanoi {
+	var c color.Color = color.White
+	if id == 2 {
+		c = color.RGBA{0xff, 0x00, 0x00, 0xff}
+	}
 	return &Hanoi{
 		id:    id,
-		tower: NewTower(id*200+100, ScreenHeight-TowerHeight),
+		tower: NewTower(id*200+100, ScreenHeight-TowerHeight, c),
 		disks: []*Disk{},
 	}
 }

@@ -61,7 +61,6 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.stand.Draw(screen)
 	for _, h := range g.honoi {
 		h.Draw(screen, h == g.selected)
 	}
@@ -71,6 +70,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		g.selected.Top().Draw(screen, x-g.selected.Top().width/2, y-DiskHeight/2, 1)
 	}
 
+	g.stand.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
