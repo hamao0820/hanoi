@@ -12,6 +12,7 @@ type Game struct {
 	honoi    [3]*Hanoi
 	stand    *Stand
 	selected *Hanoi
+	hovered  *Hanoi
 	count    int
 }
 
@@ -36,6 +37,14 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
+	x, y := ebiten.CursorPosition()
+	for _, h := range g.honoi {
+		if h.tower.IsAround(x, y) {
+			g.hovered = h
+			break
+		}
+	}
+
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		x, y := ebiten.CursorPosition()
 		for _, h := range g.honoi {
@@ -65,7 +74,7 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	for _, h := range g.honoi {
-		h.Draw(screen, h == g.selected)
+		h.Draw(screen, h == g.selected, h == g.hovered)
 	}
 
 	if g.selected != nil {

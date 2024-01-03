@@ -26,9 +26,12 @@ func NewTower(x, y int, color color.Color) *Tower {
 	}
 }
 
-func (t *Tower) Draw(screen *ebiten.Image) {
+func (t *Tower) Draw(screen *ebiten.Image, isHovered bool) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(t.x), float64(t.y))
+	if isHovered {
+		op.ColorScale.Scale(0.8, 1, 0.8, 1)
+	}
 	screen.DrawImage(t.image, op)
 }
 

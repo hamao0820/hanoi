@@ -29,8 +29,8 @@ func NewHanoi(id int) *Hanoi {
 	}
 }
 
-func (h *Hanoi) Draw(screen *ebiten.Image, isSelected bool) {
-	h.tower.Draw(screen)
+func (h *Hanoi) Draw(screen *ebiten.Image, isSelected bool, isHovered bool) {
+	h.tower.Draw(screen,isHovered)
 	for i, d := range h.disks {
 		var alpha float32 = 1.0
 		if isSelected && d == h.Top() {
