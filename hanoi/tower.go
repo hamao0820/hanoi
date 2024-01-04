@@ -55,6 +55,6 @@ func (t *Tower) DrawHover(screen *ebiten.Image) {
 }
 
 func (t *Tower) IsAround(x, y int) bool {
-	radius := TowerWidth * 5
+	radius := TowerWidth * 10
 	return t.x-radius <= x+TowerWidth/2 && x+TowerWidth/2 <= t.x+radius
 }
