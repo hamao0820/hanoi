@@ -3,9 +3,9 @@ package hanoi
 import (
 	"fmt"
 	"image/color"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
@@ -25,6 +25,8 @@ type Game struct {
 	hovered  *Hanoi
 	mode     Mode
 	count    int
+	start    time.Time
+	end      time.Time
 
 	selectPage *SelectPage
 	level      Level
@@ -54,6 +56,8 @@ func (g *Game) initGame() {
 		g.hanoi[0].Push(NewDisk(g.level.Int()+2-i, g.level)) // 1から順にディスクを積む
 	}
 	g.count = 0
+	g.start = time.Now()
+	g.end = time.Time{}
 }
 
 func (g *Game) isCleared() bool {
@@ -117,6 +121,7 @@ func (g *Game) Update() error {
 
 			if g.isCleared() {
 				g.mode = ModeResult
+				g.end = time.Now()
 			}
 		}
 	case ModeResult:
@@ -147,14 +152,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	g.stand.Draw(screen)
 
+	fontSize := 36
 	if g.mode == ModeResult {
-		fontSize := 36
 		yellow := color.RGBA{0xff, 0xff, 0x00, 0xff}
 		text.Draw(screen, "Congratulation!", mplusNormalFont, 1*ScreenWidth/4, fontSize, yellow)
 		text.Draw(screen, fmt.Sprintf("count: %d", g.count), mplusNormalFont, 1*ScreenWidth/4, 2*fontSize, yellow)
-		text.Draw(screen, "Press Space to return to the title", mplusNormalFont, 1*ScreenWidth/4, 3*fontSize, yellow)
+		text.Draw(screen, fmt.Sprintf("time: %.3f", float64(g.end.Sub(g.start).Milliseconds())/1000), mplusNormalFont, 1*ScreenWidth/4, 3*fontSize, yellow)
+		text.Draw(screen, "Press Space to return to the title", mplusNormalFont, 1*ScreenWidth/4, 4*fontSize, yellow)
 	} else {
-		ebitenutil.DebugPrint(screen, fmt.Sprintf("count: %d", g.count))
+		text.Draw(screen, fmt.Sprintf("level: %d", g.level.Int()), mplusNormalFont, 10, fontSize, color.White)
+		text.Draw(screen, fmt.Sprintf("count: %d", g.count), mplusNormalFont, 10, 2*fontSize, color.White)
+		text.Draw(screen, fmt.Sprintf("time: %.3f", float64(time.Since(g.start).Milliseconds())/1000), mplusNormalFont, 10, 3*fontSize, color.White)
 	}
 }
 
