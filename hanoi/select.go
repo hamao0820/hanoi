@@ -2,6 +2,7 @@ package hanoi
 
 import (
 	"image/color"
+	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
@@ -24,6 +25,14 @@ func NewSelectPage() *SelectPage {
 	img.DrawImage(messageImage, messageOP)
 
 	buttons := []*Button{}
+	for i := 1; i <= 9; i++ {
+		b := NewButton(strconv.Itoa(i), 0, 0)
+		b.x = (ScreenWidth/3 - ButtonWidth) / 2
+		b.y = (ScreenHeight/3 - ButtonHeight) / 2
+		b.x += (i - 1) % 3 * (ScreenWidth / 3)
+		b.y += (i-1)/3*(ScreenHeight/3) + 30*(1-(i-1)/3) // 少し中央よりに配置する
+		buttons = append(buttons, b)
+	}
 
 	return &SelectPage{
 		image:   img,
@@ -34,8 +43,7 @@ func NewSelectPage() *SelectPage {
 func (p *SelectPage) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	for _, b := range p.buttons {
-		op.GeoM.Translate(float64(b.x), float64(b.y))
-		screen.DrawImage(b.img, op)
+		b.Draw(screen)
 	}
 	screen.DrawImage(p.image, op)
 }
