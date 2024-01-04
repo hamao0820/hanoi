@@ -119,6 +119,10 @@ func (g *Game) Update() error {
 				}
 			}
 
+			if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+				g.mode = ModeSelect
+			}
+
 			if g.isCleared() {
 				g.mode = ModeResult
 				g.end = time.Now()
@@ -160,9 +164,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		text.Draw(screen, fmt.Sprintf("time: %.3f", float64(g.end.Sub(g.start).Milliseconds())/1000), mplusNormalFont, 1*ScreenWidth/4, 3*fontSize+5, yellow)
 		text.Draw(screen, "Press Space to return to the title", mplusNormalFont, 1*ScreenWidth/4, 4*fontSize+5, yellow)
 	} else {
-		text.Draw(screen, fmt.Sprintf("level: %d", g.level.Int()), mplusNormalFont, 10, fontSize, color.White)
-		text.Draw(screen, fmt.Sprintf("count: %d", g.count), mplusNormalFont, 10, 2*fontSize, color.White)
-		text.Draw(screen, fmt.Sprintf("time: %.3f", float64(time.Since(g.start).Milliseconds())/1000), mplusNormalFont, 10, 3*fontSize, color.White)
+		text.Draw(screen, "Press Esc to return to the title", mplusNormalFont, 10, fontSize, color.White)
+		text.Draw(screen, fmt.Sprintf("level: %d", g.level.Int()), mplusNormalFont, 10, 2*fontSize, color.White)
+		text.Draw(screen, fmt.Sprintf("count: %d", g.count), mplusNormalFont, 10, 3*fontSize, color.White)
+		text.Draw(screen, fmt.Sprintf("time: %.3f", float64(time.Since(g.start).Milliseconds())/1000), mplusNormalFont, 10, 4*fontSize, color.White)
 	}
 }
 
