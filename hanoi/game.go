@@ -2,10 +2,12 @@ package hanoi
 
 import (
 	"fmt"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
 type Mode int
@@ -35,11 +37,6 @@ const (
 
 func NewGame() *Game {
 	return &Game{
-		hanoi: [3]*Hanoi{
-			NewHanoi(0),
-			NewHanoi(1),
-			NewHanoi(2),
-		},
 		stand:      NewStand(),
 		mode:       ModeSelect,
 		selectPage: NewSelectPage(),
@@ -48,9 +45,19 @@ func NewGame() *Game {
 }
 
 func (g *Game) initGame() {
+	g.hanoi = [3]*Hanoi{
+		NewHanoi(0),
+		NewHanoi(1),
+		NewHanoi(2),
+	}
 	for i := 0; i < g.level.Int()+2; i++ {
 		g.hanoi[0].Push(NewDisk(g.level.Int()+2-i, g.level)) // 1から順にディスクを積む
 	}
+	g.count = 0
+}
+
+func (g *Game) isCleared() bool {
+	return len(g.hanoi[2].disks) == g.level.Int()+2
 }
 
 func (g *Game) Update() error {
@@ -107,8 +114,16 @@ func (g *Game) Update() error {
 					}
 				}
 			}
+
+			if g.isCleared() {
+				g.mode = ModeResult
+			}
 		}
 	case ModeResult:
+		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+			g.mode = ModeSelect
+			g.initGame()
+		}
 		return nil
 	}
 
@@ -116,24 +131,30 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	switch g.mode {
-	case ModeSelect:
+	if g.mode == ModeSelect {
 		g.selectPage.Draw(screen)
-	case ModeGame:
-		{
-			for _, h := range g.hanoi {
-				h.Draw(screen, h == g.selected, h == g.hovered)
-			}
+		return
+	}
 
-			if g.selected != nil {
-				x, y := ebiten.CursorPosition()
-				g.selected.Top().Draw(screen, x-g.selected.Top().width/2, y-DiskHeight/2, 1)
-			}
+	for _, h := range g.hanoi {
+		h.Draw(screen, h == g.selected, h == g.hovered)
+	}
 
-			g.stand.Draw(screen)
+	if g.selected != nil {
+		x, y := ebiten.CursorPosition()
+		g.selected.Top().Draw(screen, x-g.selected.Top().width/2, y-DiskHeight/2, 1)
+	}
 
-			ebitenutil.DebugPrint(screen, fmt.Sprintf("count: %d", g.count))
-		}
+	g.stand.Draw(screen)
+
+	if g.mode == ModeResult {
+		fontSize := 36
+		yellow := color.RGBA{0xff, 0xff, 0x00, 0xff}
+		text.Draw(screen, "Congratulation!", mplusNormalFont, 1*ScreenWidth/4, fontSize, yellow)
+		text.Draw(screen, fmt.Sprintf("count: %d", g.count), mplusNormalFont, 1*ScreenWidth/4, 2*fontSize, yellow)
+		text.Draw(screen, "Press Space to return to the title", mplusNormalFont, 1*ScreenWidth/4, 3*fontSize, yellow)
+	} else {
+		ebitenutil.DebugPrint(screen, fmt.Sprintf("count: %d", g.count))
 	}
 }
 
