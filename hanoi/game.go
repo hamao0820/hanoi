@@ -8,11 +8,20 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
+type Mode int
+
+const (
+	ModeSelect Mode = iota
+	ModeGame
+	ModeResult
+)
+
 type Game struct {
 	honoi    [3]*Hanoi
 	stand    *Stand
 	selected *Hanoi
 	hovered  *Hanoi
+	mode     Mode
 	count    int
 }
 
@@ -33,40 +42,50 @@ func NewGame() *Game {
 			NewHanoi(2),
 		},
 		stand: NewStand(),
+		mode:  ModeGame,
 	}
 }
 
 // TODO: レベル選択画面を作る
 func (g *Game) Update() error {
-	x, y := ebiten.CursorPosition()
-	for _, h := range g.honoi {
-		if h.tower.IsAround(x, y) {
-			g.hovered = h
-			break
-		}
-	}
+	switch g.mode {
+	case ModeSelect:
+		return nil
+	case ModeGame:
+		{
+			x, y := ebiten.CursorPosition()
+			for _, h := range g.honoi {
+				if h.tower.IsAround(x, y) {
+					g.hovered = h
+					break
+				}
+			}
 
-	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		x, y := ebiten.CursorPosition()
-		for _, h := range g.honoi {
-			if h.tower.IsAround(x, y) {
-				switch g.selected {
-				case nil:
-					if !h.IsEmpty(x, y) {
-						g.selected = h
-					}
-				case h:
-					g.selected = nil
-				default:
-					if h.CanPush(g.selected.Top()) {
-						h.Push(g.selected.Pop())
-						g.selected = nil
-						g.count++
+			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+				x, y := ebiten.CursorPosition()
+				for _, h := range g.honoi {
+					if h.tower.IsAround(x, y) {
+						switch g.selected {
+						case nil:
+							if !h.IsEmpty(x, y) {
+								g.selected = h
+							}
+						case h:
+							g.selected = nil
+						default:
+							if h.CanPush(g.selected.Top()) {
+								h.Push(g.selected.Pop())
+								g.selected = nil
+								g.count++
+							}
+						}
+						break
 					}
 				}
-				break
 			}
 		}
+	case ModeResult:
+		return nil
 	}
 
 	return nil
