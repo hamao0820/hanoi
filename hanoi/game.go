@@ -23,6 +23,8 @@ type Game struct {
 	hovered  *Hanoi
 	mode     Mode
 	count    int
+
+	selectPage *SelectPage
 }
 
 const (
@@ -41,8 +43,9 @@ func NewGame() *Game {
 			NewHanoi(1),
 			NewHanoi(2),
 		},
-		stand: NewStand(),
-		mode:  ModeGame,
+		stand:      NewStand(),
+		mode:       ModeSelect,
+		selectPage: NewSelectPage(),
 	}
 }
 
@@ -92,18 +95,25 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	for _, h := range g.honoi {
-		h.Draw(screen, h == g.selected, h == g.hovered)
+	switch g.mode {
+	case ModeSelect:
+		g.selectPage.Draw(screen)
+	case ModeGame:
+		{
+			for _, h := range g.honoi {
+				h.Draw(screen, h == g.selected, h == g.hovered)
+			}
+
+			if g.selected != nil {
+				x, y := ebiten.CursorPosition()
+				g.selected.Top().Draw(screen, x-g.selected.Top().width/2, y-DiskHeight/2, 1)
+			}
+
+			g.stand.Draw(screen)
+
+			ebitenutil.DebugPrint(screen, fmt.Sprintf("count: %d", g.count))
+		}
 	}
-
-	if g.selected != nil {
-		x, y := ebiten.CursorPosition()
-		g.selected.Top().Draw(screen, x-g.selected.Top().width/2, y-DiskHeight/2, 1)
-	}
-
-	g.stand.Draw(screen)
-
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("count: %d", g.count))
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
