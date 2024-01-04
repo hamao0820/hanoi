@@ -73,11 +73,16 @@ func (g *Game) Update() error {
 	case ModeGame:
 		{
 			x, y := ebiten.CursorPosition()
+			exist := false
 			for _, h := range g.hanoi {
 				if h.tower.IsAround(x, y) {
 					g.hovered = h
+					exist = true
 					break
 				}
+			}
+			if !exist {
+				g.hovered = nil
 			}
 
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
