@@ -47,7 +47,7 @@ func NewGame() *Game {
 	}
 }
 
-func (g *Game) InitGame() {
+func (g *Game) initGame() {
 	for i := 0; i < g.level.Int()+2; i++ {
 		g.hanoi[0].Push(NewDisk(g.level.Int()+2-i, g.level)) // 1から順にディスクを積む
 	}
@@ -64,7 +64,7 @@ func (g *Game) Update() error {
 				if b.In(x, y) {
 					g.level = b.level
 					g.mode = ModeGame
-					g.InitGame()
+					g.initGame()
 					break
 				}
 			}
