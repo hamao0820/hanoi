@@ -30,6 +30,10 @@ func (l Level) String() string {
 	return strconv.Itoa(int(l))
 }
 
+func (l Level) Int() int {
+	return int(l)
+}
+
 type LevelSelectButton struct {
 	img   *ebiten.Image
 	level Level

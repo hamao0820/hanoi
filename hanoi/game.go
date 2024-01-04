@@ -35,9 +35,6 @@ const (
 
 func NewGame() *Game {
 	h1 := NewHanoi(0)
-	h1.disks = append(h1.disks, NewDisk(3))
-	h1.disks = append(h1.disks, NewDisk(2))
-	h1.disks = append(h1.disks, NewDisk(1))
 	return &Game{
 		honoi: [3]*Hanoi{
 			h1,
@@ -48,6 +45,12 @@ func NewGame() *Game {
 		mode:       ModeSelect,
 		selectPage: NewSelectPage(),
 		level:      Level1,
+	}
+}
+
+func (g *Game) InitGame() {
+	for i := 0; i < g.level.Int()+2; i++ {
+		g.honoi[0].Push(NewDisk(g.level.Int() + 2 - i)) // 1から順にディスクを積む
 	}
 }
 
@@ -63,6 +66,7 @@ func (g *Game) Update() error {
 				if b.In(x, y) {
 					g.level = b.level
 					g.mode = ModeGame
+					g.InitGame()
 					break
 				}
 			}
