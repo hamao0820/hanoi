@@ -25,6 +25,7 @@ type Game struct {
 	count    int
 
 	selectPage *SelectPage
+	level      Level
 }
 
 const (
@@ -46,6 +47,7 @@ func NewGame() *Game {
 		stand:      NewStand(),
 		mode:       ModeSelect,
 		selectPage: NewSelectPage(),
+		level:      Level1,
 	}
 }
 
@@ -54,6 +56,17 @@ func (g *Game) Update() error {
 	switch g.mode {
 	case ModeSelect:
 		g.selectPage.Update()
+
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			x, y := ebiten.CursorPosition()
+			for _, b := range g.selectPage.buttons {
+				if b.In(x, y) {
+					g.level = b.level
+					g.mode = ModeGame
+					break
+				}
+			}
+		}
 		return nil
 	case ModeGame:
 		{
