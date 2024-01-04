@@ -36,6 +36,7 @@ func NewGame() *Game {
 	}
 }
 
+// TODO: レベル選択画面を作る
 func (g *Game) Update() error {
 	x, y := ebiten.CursorPosition()
 	for _, h := range g.honoi {
