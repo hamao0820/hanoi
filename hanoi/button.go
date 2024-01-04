@@ -66,3 +66,14 @@ func (b *Button) Draw(screen *ebiten.Image) {
 	op.GeoM.Translate(float64(b.x), float64(b.y))
 	screen.DrawImage(b.img, op)
 }
+
+func (b *Button) DrawHover(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(b.x+1), float64(b.y-1))
+	op.ColorScale.Scale(1, 1, 0.8, 1)
+	screen.DrawImage(b.img, op)
+}
+
+func (b *Button) In(x, y int) bool {
+	return b.x <= x && x < b.x+ButtonWidth && b.y <= y && y < b.y+ButtonHeight
+}

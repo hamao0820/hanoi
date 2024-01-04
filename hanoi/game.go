@@ -53,6 +53,7 @@ func NewGame() *Game {
 func (g *Game) Update() error {
 	switch g.mode {
 	case ModeSelect:
+		g.selectPage.Update()
 		return nil
 	case ModeGame:
 		{

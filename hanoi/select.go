@@ -12,6 +12,7 @@ type SelectPage struct {
 	image *ebiten.Image
 
 	buttons []*Button
+	hovered *Button
 }
 
 func NewSelectPage() *SelectPage {
@@ -43,7 +44,22 @@ func NewSelectPage() *SelectPage {
 func (p *SelectPage) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	for _, b := range p.buttons {
-		b.Draw(screen)
+		if b == p.hovered {
+			b.DrawHover(screen)
+		} else {
+			b.Draw(screen)
+		}
 	}
 	screen.DrawImage(p.image, op)
+}
+
+func (p *SelectPage) Update() {
+	x, y := ebiten.CursorPosition()
+	for _, b := range p.buttons {
+		if b.In(x, y) {
+			p.hovered = b
+			return
+		}
+	}
+	p.hovered = nil
 }
