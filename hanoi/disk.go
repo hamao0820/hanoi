@@ -20,8 +20,8 @@ type Disk struct {
 	alphaImage *image.Alpha
 }
 
-func NewDisk(size int) *Disk {
-	baseWidth := 50
+func NewDisk(size int, level Level) *Disk {
+	baseWidth := 25 + 5*(11-level.Int()-2)
 	width := baseWidth * (size)
 	img := ebiten.NewImage(width, DiskHeight)
 	img.Fill(hsl.NewHSL(rand.Float64(), 1, 0.5).ToRGB())

@@ -24,7 +24,7 @@ func NewHanoi(id int) *Hanoi {
 	}
 	return &Hanoi{
 		id:    id,
-		tower: NewTower(id*200+100, ScreenHeight-TowerHeight, c),
+		tower: NewTower(id*ScreenWidth/3+ScreenWidth/6-TowerWidth/2, ScreenHeight-TowerHeight, c),
 		disks: []*Disk{},
 	}
 }
@@ -39,7 +39,7 @@ func (h *Hanoi) Draw(screen *ebiten.Image, isSelected bool, isHovered bool) {
 		if isSelected && d == h.Top() {
 			alpha = 0.5
 		}
-		d.Draw(screen, h.id*200+100-d.width/2+TowerWidth/2, ScreenHeight-(i+1)*DiskHeight-StandHeight, alpha)
+		d.Draw(screen, h.id*ScreenWidth/3+ScreenWidth/6-d.width/2, ScreenHeight-(i+1)*DiskHeight-StandHeight, alpha)
 	}
 }
 

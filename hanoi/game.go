@@ -17,7 +17,7 @@ const (
 )
 
 type Game struct {
-	honoi    [3]*Hanoi
+	hanoi    [3]*Hanoi
 	stand    *Stand
 	selected *Hanoi
 	hovered  *Hanoi
@@ -29,15 +29,14 @@ type Game struct {
 }
 
 const (
-	ScreenWidth  = 640
-	ScreenHeight = 480
+	ScreenWidth  = 960
+	ScreenHeight = 540
 )
 
 func NewGame() *Game {
-	h1 := NewHanoi(0)
 	return &Game{
-		honoi: [3]*Hanoi{
-			h1,
+		hanoi: [3]*Hanoi{
+			NewHanoi(0),
 			NewHanoi(1),
 			NewHanoi(2),
 		},
@@ -50,11 +49,10 @@ func NewGame() *Game {
 
 func (g *Game) InitGame() {
 	for i := 0; i < g.level.Int()+2; i++ {
-		g.honoi[0].Push(NewDisk(g.level.Int() + 2 - i)) // 1から順にディスクを積む
+		g.hanoi[0].Push(NewDisk(g.level.Int()+2-i, g.level)) // 1から順にディスクを積む
 	}
 }
 
-// TODO: レベル選択画面を作る
 func (g *Game) Update() error {
 	switch g.mode {
 	case ModeSelect:
@@ -75,7 +73,7 @@ func (g *Game) Update() error {
 	case ModeGame:
 		{
 			x, y := ebiten.CursorPosition()
-			for _, h := range g.honoi {
+			for _, h := range g.hanoi {
 				if h.tower.IsAround(x, y) {
 					g.hovered = h
 					break
@@ -84,7 +82,7 @@ func (g *Game) Update() error {
 
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 				x, y := ebiten.CursorPosition()
-				for _, h := range g.honoi {
+				for _, h := range g.hanoi {
 					if h.tower.IsAround(x, y) {
 						switch g.selected {
 						case nil:
@@ -118,7 +116,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		g.selectPage.Draw(screen)
 	case ModeGame:
 		{
-			for _, h := range g.honoi {
+			for _, h := range g.hanoi {
 				h.Draw(screen, h == g.selected, h == g.hovered)
 			}
 
