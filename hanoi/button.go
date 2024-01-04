@@ -3,6 +3,7 @@ package hanoi
 import (
 	"image/color"
 	"log"
+	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
@@ -11,10 +12,28 @@ import (
 	"golang.org/x/image/font/opentype"
 )
 
-type Button struct {
-	img  *ebiten.Image
-	text string
-	x, y int
+type Level int
+
+const (
+	Level1 Level = 1
+	Level2 Level = 2
+	Level3 Level = 3
+	Level4 Level = 4
+	Level5 Level = 5
+	Level6 Level = 6
+	Level7 Level = 7
+	Level8 Level = 8
+	Level9 Level = 9
+)
+
+func (l Level) String() string {
+	return strconv.Itoa(int(l))
+}
+
+type LevelSelectButton struct {
+	img   *ebiten.Image
+	level Level
+	x, y  int
 }
 
 const (
@@ -43,37 +62,37 @@ func init() {
 	}
 }
 
-func NewButton(t string, x, y int) *Button {
+func NewButton(level Level, x, y int) *LevelSelectButton {
 	img := ebiten.NewImage(ButtonWidth, ButtonHeight)
 	img.Fill(color.White)
 	textImage := ebiten.NewImage(20, 20)
-	text.Draw(textImage, t, mplusNormalFont, textImage.Bounds().Dx()/2-5, textImage.Bounds().Dy()/2+10, color.Black)
+	text.Draw(textImage, level.String(), mplusNormalFont, textImage.Bounds().Dx()/2-5, textImage.Bounds().Dy()/2+10, color.Black)
 	textImageX := (ButtonWidth - textImage.Bounds().Dx()) / 2
 	textImageY := (ButtonHeight - textImage.Bounds().Dy()) / 2
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(textImageX), float64(textImageY))
 	img.DrawImage(textImage, op)
-	return &Button{
-		img:  img,
-		text: t,
-		x:    x,
-		y:    y,
+	return &LevelSelectButton{
+		img:   img,
+		level: level,
+		x:     x,
+		y:     y,
 	}
 }
 
-func (b *Button) Draw(screen *ebiten.Image) {
+func (b *LevelSelectButton) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(b.x), float64(b.y))
 	screen.DrawImage(b.img, op)
 }
 
-func (b *Button) DrawHover(screen *ebiten.Image) {
+func (b *LevelSelectButton) DrawHover(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(b.x+1), float64(b.y-1))
 	op.ColorScale.Scale(1, 1, 0.8, 1)
 	screen.DrawImage(b.img, op)
 }
 
-func (b *Button) In(x, y int) bool {
+func (b *LevelSelectButton) In(x, y int) bool {
 	return b.x <= x && x < b.x+ButtonWidth && b.y <= y && y < b.y+ButtonHeight
 }

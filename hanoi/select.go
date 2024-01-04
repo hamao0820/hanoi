@@ -2,7 +2,6 @@ package hanoi
 
 import (
 	"image/color"
-	"strconv"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
@@ -11,8 +10,8 @@ import (
 type SelectPage struct {
 	image *ebiten.Image
 
-	buttons []*Button
-	hovered *Button
+	buttons []*LevelSelectButton
+	hovered *LevelSelectButton
 }
 
 func NewSelectPage() *SelectPage {
@@ -25,9 +24,30 @@ func NewSelectPage() *SelectPage {
 	messageOP.GeoM.Translate(float64((ScreenWidth-messageImage.Bounds().Dx()))/2, 10)
 	img.DrawImage(messageImage, messageOP)
 
-	buttons := []*Button{}
+	buttons := []*LevelSelectButton{}
 	for i := 1; i <= 9; i++ {
-		b := NewButton(strconv.Itoa(i), 0, 0)
+		var l Level
+		switch i {
+		case 1:
+			l = Level1
+		case 2:
+			l = Level2
+		case 3:
+			l = Level3
+		case 4:
+			l = Level4
+		case 5:
+			l = Level5
+		case 6:
+			l = Level6
+		case 7:
+			l = Level7
+		case 8:
+			l = Level8
+		case 9:
+			l = Level9
+		}
+		b := NewButton(l, 0, 0)
 		b.x = (ScreenWidth/3 - ButtonWidth) / 2
 		b.y = (ScreenHeight/3 - ButtonHeight) / 2
 		b.x += (i - 1) % 3 * (ScreenWidth / 3)
