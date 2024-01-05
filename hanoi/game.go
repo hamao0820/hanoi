@@ -58,6 +58,8 @@ func (g *Game) initGame() {
 	g.count = 0
 	g.start = time.Now()
 	g.end = time.Time{}
+	g.selected = nil
+	g.hovered = nil
 }
 
 func (g *Game) isCleared() bool {
